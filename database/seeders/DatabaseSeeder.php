@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1. LLAMAR A OTROS SEEDERS (incluyendo el usuario que ya creaste, si es un seeder separado)
+        $this->call(UserSeeder::class);
         // Crear categorías
         $categorias = [
             ['nombre' => 'Bebidas', 'descripcion' => 'Bebidas alcohólicas y no alcohólicas', 'activo' => true],
