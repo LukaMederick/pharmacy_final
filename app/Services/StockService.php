@@ -33,7 +33,7 @@ class StockService
         ) {
             $producto = Producto::findOrFail($productoId);
             $stockAnterior = $producto->stock_actual;
-            
+
             // Calcular nuevo stock según el tipo de movimiento
             $stockNuevo = match ($tipoMovimiento) {
                 'ENTRADA' => $stockAnterior + $cantidad,
@@ -41,13 +41,13 @@ class StockService
                 'AJUSTE' => $cantidad, // En ajuste, la cantidad es el nuevo stock total
                 default => throw new Exception("Tipo de movimiento no válido: {$tipoMovimiento}")
             };
-            
+
             // Validar que el stock no sea negativo
             if ($stockNuevo < 0) {
                 throw new Exception("Stock insuficiente. Stock actual: {$stockAnterior}, cantidad solicitada: {$cantidad}");
             }
-            
-            // Crear el movimiento de stock
+
+            // Crear el movimiento de stock n
             $movimiento = MovimientoStock::create([
                 'producto_id' => $productoId,
                 'tipo_movimiento' => $tipoMovimiento,
@@ -60,14 +60,14 @@ class StockService
                 'fecha_movimiento' => now()->toDateString(),
                 'observaciones' => $observaciones,
             ]);
-            
+
             // Actualizar el stock del producto
             $producto->update(['stock_actual' => $stockNuevo]);
-            
+
             return $movimiento;
         });
     }
-    
+
     /**
      * Registra una entrada de stock (compra)
      */
@@ -88,7 +88,7 @@ class StockService
             $observaciones
         );
     }
-    
+
     /**
      * Registra una salida de stock (venta)
      */
@@ -109,7 +109,7 @@ class StockService
             $observaciones
         );
     }
-    
+
     /**
      * Registra un ajuste de stock
      */
@@ -130,7 +130,7 @@ class StockService
             $observaciones
         );
     }
-    
+
     /**
      * Verifica si hay stock suficiente para una venta
      */
@@ -139,7 +139,7 @@ class StockService
         $producto = Producto::findOrFail($productoId);
         return $producto->stock_actual >= $cantidadRequerida;
     }
-    
+
     /**
      * Obtiene productos con stock bajo
      */
@@ -150,7 +150,7 @@ class StockService
             ->with(['categoria', 'proveedor'])
             ->get();
     }
-    
+
     /**
      * Obtiene el historial de movimientos de un producto
      */
